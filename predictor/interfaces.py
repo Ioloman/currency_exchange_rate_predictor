@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
-from typing import Optional
-from .types import *
+from typing import Optional, NoReturn
+from .types import CURRENCY, PERIOD, DATE, DATA, IData
 
 
 class IDataAccess(ABC):
@@ -27,10 +27,10 @@ class IDataExtractor(ABC):
 
 class IVisualizer(ABC):
     @abstractmethod
-    def show(self, *args, **kwargs):
+    def show(self, *args, **kwargs) -> NoReturn:
         pass
 
-    def __call__(self, *args, **kwargs):
+    def __call__(self, *args, **kwargs) -> NoReturn:
         self.__class__.show(*args, **kwargs)
 
 

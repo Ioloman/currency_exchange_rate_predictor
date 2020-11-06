@@ -1,9 +1,10 @@
 from typing import Optional, NoReturn, Union
-from .types import DATA, CURRENCY, DATE, PERIOD
-from .defs import IDataAccess, IDataExtractor
+from .types import CURRENCY, DATE, PERIOD, DATA, IData
+from .interfaces import IDataAccess, IDataExtractor
+from .logger import log
 
 
-class Data:
+class Data(IData):
     def slice(self):
         pass
 
@@ -18,19 +19,33 @@ class Data:
 
 
 class DataVault(IDataAccess):
+    @log(role='Real Subject (Proxy)', type_='method')
     def get_data(self, currency: tuple[CURRENCY, CURRENCY], start_date: DATE, period: PERIOD = 'day',
                  end_date: Optional[DATE] = None) -> DATA:
         pass
 
 
 class DataVaultProxy(IDataAccess):
+    @log(role='Proxy (Proxy)')
+    def __init__(self, data_vault):
+        self.__data_vault: DataVault = data_vault
+
+    @log(role='Proxy (Proxy)')
     def get_data(self, currency: tuple[CURRENCY, CURRENCY], start_date: DATE, period: PERIOD = 'day',
                  end_date: Optional[DATE] = None) -> DATA:
-        pass
+
+        if self.__check_something():
+            return self.__real.get_data(currency, start_date, period, end_date)
+        else:
+            pass
 
     @property
     def __real(self):
         return self.__data_vault
+
+    @log(role='Proxy (Proxy)')
+    def __check_something(self):
+        return True
 
 
 class DataExtractor(IDataExtractor):

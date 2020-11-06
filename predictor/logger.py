@@ -11,8 +11,8 @@ TYPE: Final = Literal['method', 'function', 'classmethod', 'staticmethod']
 OUT: Final = Literal['console', 'file']
 
 
-def log(method_role: str = '--', type_: TYPE = 'method', out: OUT = 'console',
-        class_: Optional[str] = None, role_: Optional[str] = None) -> Callable[..., Callable]:
+def log(role: str = '--', method_role: str = '--', type_: TYPE = 'method', out: OUT = 'console',
+        class_: Optional[str] = None) -> Callable[..., Callable]:
     def actual_decorator(func: Callable) -> Callable[..., Any]:
         def wrapper(*args, **kwargs) -> Any:
             # action before
@@ -29,27 +29,15 @@ def log(method_role: str = '--', type_: TYPE = 'method', out: OUT = 'console',
                 method = func.__name__
                 if type_ == 'method':
                     cls = args[0].__class__.__name__
-                    try:
-                        role = args[0].__class__.role.__name__
-                    except AttributeError:
-                        role = '--'
                     id_ = id(args[0])
                 elif type_ == 'classmethod':
                     cls = args[0].__name__
-                    try:
-                        role = args[0].role.__name__
-                    except AttributeError:
-                        role = '--'
                     id_ = cls
                 elif type_ == 'staticmethod':
                     if class_:
                         cls = class_
                     else:
                         cls = '--'
-                    if role_:
-                        role = role_
-                    else:
-                        role = '--'
                     id_ = class_
 
                 result = f'<{cls}>_<{role}>_<{id_}>:<{method}>[<{method_role}>] -- {type_}'
