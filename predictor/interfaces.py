@@ -31,7 +31,7 @@ class IVisualizer(ABC):
         pass
 
     def __call__(self, *args, **kwargs) -> NoReturn:
-        self.__class__.show(*args, **kwargs)
+        self.show(*args, **kwargs)
 
 
 class IPredictor(ABC):
@@ -40,4 +40,4 @@ class IPredictor(ABC):
         pass
 
     def __call__(self, *args, **kwargs) -> DATA:
-        return self.__class__.predict(*args, **kwargs)
+        return self.predict(*args, **kwargs)
