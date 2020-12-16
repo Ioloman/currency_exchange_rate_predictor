@@ -1,21 +1,80 @@
 from typing import Optional, NoReturn, Union
 from .types import CURRENCY, DATE, PERIOD, DATA, IData
-from .interfaces import IDataAccess, IDataExtractor
+from .interfaces import IDataAccess, IDataExtractor, DataCreator, SingletonMeta
 from .logger import log
+from copy import deepcopy, copy
 
 
-class Data(IData):
+class DataPrediction(IData):
+    @log(role='Prototype', method_role='shallow copy')
+    def __copy__(self):
+        return self.__class__(copy(self.custom_prediction_args))
+
+    @log(role='Prototype', method_role='deep copy')
+    def __deepcopy__(self, memodict={}):
+        return self.__class__(deepcopy(self.custom_prediction_args))
+
+    @log(role='Created by Prediction factory (Factory method)')
+    def __init__(self, *args):
+        self.custom_prediction_args = args
+
+    @log(role='Created by Prediction factory (Factory method)')
     def slice(self):
         pass
 
+    @log(role='Created by Prediction factory (Factory method)')
     def save(self):
         pass
 
+    @log(role='Created by Prediction factory (Factory method)')
     def extend(self, data: DATA):
         pass
 
+    @log(role='Created by Prediction factory (Factory method)')
     def borders(self):
         pass
+
+
+class DataHistory(IData):
+    @log(role='Prototype', method_role='shallow copy')
+    def __copy__(self):
+        return self.__class__(copy(self.custom_history_args))
+
+    @log(role='Prototype', method_role='deep copy')
+    def __deepcopy__(self, memodict={}):
+        return self.__class__(deepcopy(self.custom_history_args))
+
+    @log(role='Created by History factory (Factory method)')
+    def __init__(self, *args):
+        self.custom_history_args = args
+
+    @log(role='Created by History factory (Factory method)')
+    def slice(self):
+        pass
+
+    @log(role='Created by History factory (Factory method)')
+    def save(self):
+        pass
+
+    @log(role='Created by History factory (Factory method)')
+    def extend(self, data: DATA):
+        pass
+
+    @log(role='Created by History factory (Factory method)')
+    def borders(self):
+        pass
+
+
+class DataPredictionCreator(DataCreator):
+    @log(role='Prediction factory (Factory method)', method_role='creates concrete object')
+    def create_data(self, *args) -> IData:
+        return DataPrediction(*args)
+
+
+class DataHistoryCreator(DataCreator):
+    @log(role='History factory (Factory method)', method_role='creates concrete object')
+    def create_data(self, *args) -> IData:
+        return DataHistory(*args)
 
 
 class DataVault(IDataAccess):
@@ -60,12 +119,19 @@ class DataExtractor(IDataExtractor):
         pass
 
 
-class PredictionVault:
+class PredictionVault(metaclass=SingletonMeta):
+    @log(role='Singleton itself (Singleton)')
+    def __init__(self, data):
+        self.data = data
+
+    @log(role='Singleton itself (Singleton)')
     def save(self) -> NoReturn:
         pass
 
+    @log(role='Singleton itself (Singleton)')
     def history(self) -> list[DATA]:
         pass
 
+    @log(role='Singleton itself (Singleton)')
     def get_by_date(self, date_: DATE) -> Union[DATA, None]:
         pass

@@ -1,17 +1,17 @@
 from .logger import log
-from .interfaces import IPredictor, IVisualizer
+from .interfaces import DataCreator
+from copy import copy, deepcopy
 
 
 class Manager:
     @log()
-    def __init__(self, predictor: IPredictor, visualizer: IVisualizer):
-        self.__predictor = predictor
-        self.__visualizer = visualizer
+    def __init__(self, factory: DataCreator):
+        self.__factory = factory
 
-    @log(method_role='delegation')
-    def predict(self, *args, **kwargs):
-        return self.__predictor.predict(*args, **kwargs)
-
-    @log(method_role='delegation')
-    def show(self, *args, **kwargs):
-        self.__visualizer.show(*args, **kwargs)
+    @log(role='Client (Factory method)')
+    def use_factory(self, *args):
+        data = self.__factory.create_data(*args)
+        shallow_copy = copy(data)
+        deep_copy = deepcopy(data)
+        data.extend(deep_copy)
+        data.save()

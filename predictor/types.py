@@ -20,6 +20,14 @@ class IData(ABC):
     def borders(self):
         pass
 
+    @abstractmethod
+    def __copy__(self):
+        pass
+
+    @abstractmethod
+    def __deepcopy__(self, memodict={}):
+        pass
+
 
 PERIOD = Literal['day', 'year', ]
 DATE = Union[datetime, date]

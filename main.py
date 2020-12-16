@@ -3,23 +3,22 @@ from datetime import date
 
 
 if __name__ == '__main__':
-    # proxy
-    print('------------Proxy----------------')
-    real = pd.DataVault()
-    proxy = pd.DataVaultProxy(real)
-    result = proxy.get_data(('rub', 'usd'), date(2020, 1, 1), 'day', date(2020, 1, 31))
+    # Factory method and Prototype
+    print('-------------Factory method and Prototype----------------------')
+    client1 = pd.Manager(pd.DataPredictionCreator)
+    print('-----------First client demo-------------------')
+    client1.use_factory([1,2,3])
 
-    # delegation
-    print('-----------Delegation-------------')
-    visualizers = [pd.Visualizer1(), pd.Visualizer2()]
-    predictors = [pd.Predictor1(), pd.Predictor2()]
+    client2 = pd.Manager(pd.DataHistoryCreator)
+    print('-----------Second client demo-------------------')
+    client1.use_factory([4,5,6])
 
-    manager1 = pd.Manager(predictors[0], visualizers[1])
-    manager2 = pd.Manager(predictors[1], visualizers[0])
+    # Singleton
+    print('---------------Singleton---------------------')
+    vault1 = pd.data.PredictionVault(1)
+    vault2 = pd.data.PredictionVault(2)
+    print(f"id's: {id(vault1)}, {id(vault2)}")
+    print(f"values: {vault1.data}, {vault2.data}")
 
-    manager1.predict(pd.Data())
-    manager1.show(pd.Data(), pd.Data())
 
-    manager2.predict(pd.Data())
-    manager2.show(pd.Data(), pd.Data())
 
