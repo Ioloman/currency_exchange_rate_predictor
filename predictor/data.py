@@ -1,6 +1,6 @@
 from typing import Optional, NoReturn, Union
 from .types import CURRENCY, DATE, PERIOD, DATA, IData
-from .interfaces import IDataAccess, IDataExtractor, DataCreator, SingletonMeta
+from .interfaces import IDataAccess, IDataExtractor, DataCreator, SingletonMeta, DataFactory
 from .logger import log
 from copy import deepcopy, copy
 
@@ -14,23 +14,23 @@ class DataPrediction(IData):
     def __deepcopy__(self, memodict={}):
         return self.__class__(deepcopy(self.custom_prediction_args))
 
-    @log(role='Created by Prediction factory (Factory method)')
+    @log(role='Created by factory (Factory method/Abstract factory)')
     def __init__(self, *args):
         self.custom_prediction_args = args
 
-    @log(role='Created by Prediction factory (Factory method)')
+    @log(role='Created by factory (Factory method/Abstract factory)')
     def slice(self):
         pass
 
-    @log(role='Created by Prediction factory (Factory method)')
+    @log(role='Created by factory (Factory method/Abstract factory)')
     def save(self):
         pass
 
-    @log(role='Created by Prediction factory (Factory method)')
+    @log(role='Created by factory (Factory method/Abstract factory)')
     def extend(self, data: DATA):
         pass
 
-    @log(role='Created by Prediction factory (Factory method)')
+    @log(role='Created by factory (Factory method/Abstract factory)')
     def borders(self):
         pass
 
@@ -44,25 +44,61 @@ class DataHistory(IData):
     def __deepcopy__(self, memodict={}):
         return self.__class__(deepcopy(self.custom_history_args))
 
-    @log(role='Created by History factory (Factory method)')
+    @log(role='Created by factory (Factory method/Abstract factory)')
     def __init__(self, *args):
         self.custom_history_args = args
 
-    @log(role='Created by History factory (Factory method)')
+    @log(role='Created by factory (Factory method/Abstract factory)')
     def slice(self):
         pass
 
-    @log(role='Created by History factory (Factory method)')
+    @log(role='Created by factory (Factory method/Abstract factory)')
     def save(self):
         pass
 
-    @log(role='Created by History factory (Factory method)')
+    @log(role='Created by factory (Factory method/Abstract factory)')
     def extend(self, data: DATA):
         pass
 
-    @log(role='Created by History factory (Factory method)')
+    @log(role='Created by factory (Factory method/Abstract factory)')
     def borders(self):
         pass
+
+
+class MacDataPrediction(DataPrediction):
+    pass
+
+
+class MacDataHistory(DataHistory):
+    pass
+
+
+class MacDataFactory(DataFactory):
+    @log(role='Factory (Abstract factory)', method_role='factory initiation')
+    def __init__(self):
+        pass
+
+    @log(role='Factory (Abstract factory)', method_role='create history data')
+    def create_history_data(self, *args) -> IData:
+        return MacDataHistory(*args)
+
+    @log(role='Factory (Abstract factory)', method_role='create prediction data')
+    def create_prediction_data(self, *args) -> IData:
+        return MacDataPrediction(*args)
+
+
+class WindowsDataFactory(DataFactory):
+    @log(role='Factory (Abstract factory)', method_role='factory initiation')
+    def __init__(self):
+        pass
+
+    @log(role='Factory (Abstract factory)', method_role='create history data')
+    def create_history_data(self, *args) -> IData:
+        return DataHistory(*args)
+
+    @log(role='Factory (Abstract factory)', method_role='create prediction data')
+    def create_prediction_data(self, *args) -> IData:
+        return DataPrediction(*args)
 
 
 class DataPredictionCreator(DataCreator):

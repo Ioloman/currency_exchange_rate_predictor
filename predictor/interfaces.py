@@ -21,6 +21,16 @@ class SingletonMeta(type):
         return cls.__instances[cls]
 
 
+class DataFactory(ABC):
+    @abstractmethod
+    def create_history_data(self, *args) -> IData:
+        pass
+
+    @abstractmethod
+    def create_prediction_data(self, *args) -> IData:
+        pass
+
+
 class DataCreator(ABC):
     @staticmethod
     @log(role='Factory base class (Factory method)', class_='DataCreator', type_='staticmethod')
