@@ -1,4 +1,4 @@
-from abc import ABC, abstractmethod
+from abc import ABC, abstractmethod, ABCMeta
 from typing import Optional, NoReturn
 from .types import CURRENCY, PERIOD, DATE, DATA, IData
 
@@ -22,6 +22,36 @@ class IDataExtractor(ABC):
 
     @abstractmethod
     def available_rates(self) -> list[tuple[CURRENCY, CURRENCY]]:
+        pass
+
+
+class ExtractorStrategy(IDataExtractor, metaclass=ABCMeta):
+    pass
+
+
+class Memento(ABC):
+    @abstractmethod
+    def get_date(self):
+        pass
+
+
+class Observer(ABC):
+    @abstractmethod
+    def update(self, *args, **kwargs):
+        pass
+
+
+class EventManager(ABC):
+    @abstractmethod
+    def attach(self, obj: Observer):
+        pass
+
+    @abstractmethod
+    def detach(self, obj: Observer):
+        pass
+
+    @abstractmethod
+    def notify(self, *args, **kwargs):
         pass
 
 

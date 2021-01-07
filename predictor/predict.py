@@ -1,17 +1,37 @@
 from typing import Optional
-from .interfaces import IPredictor, IVisualizer
+from .interfaces import IPredictor, IVisualizer, EventManager, Observer
 from .types import DATA
 from .logger import log
 
 
-class Predictor1(IPredictor):
-    @log(role='delegate')
-    def predict(self, data_: DATA, n: Optional[int] = None) -> DATA:
-        pass
+class PredictEventManager(EventManager):
+    @log(role='Event Manager (observer)')
+    def __init__(self):
+        self.__objects: list[Observer] = []
+
+    @log(role='Event Manager (observer)', method_role='attach observer')
+    def attach(self, obj: Observer):
+        self.__objects.append(obj)
+
+    @log(role='Event Manager (observer)', method_role='detach observer')
+    def detach(self, obj: Observer):
+        self.__objects.remove(obj)
+
+    @log(role='Event Manager (observer)', method_role='notify observers')
+    def notify(self, *args, **kwargs):
+        for obj in self.__objects:
+            obj.update(*args, **kwargs)
 
 
-class Predictor2(IPredictor):
-    @log(role='delegate')
+class Predictor(IPredictor, Observer):
+    @log(role='Observer (Observer)', method_role='do some preparation')
+    def update(self, *args, **kwargs):
+        self.__get_ready()
+
+    @log(role='Observer (Observer)', method_role='preparation')
+    def __get_ready(self):
+        self.array = [0] * 1000
+
     def predict(self, data_: DATA, n: Optional[int] = None) -> DATA:
         pass
 

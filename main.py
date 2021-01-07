@@ -3,23 +3,39 @@ from datetime import date
 
 
 if __name__ == '__main__':
-    # proxy
-    print('------------Proxy----------------')
-    real = pd.DataVault()
-    proxy = pd.DataVaultProxy(real)
-    result = proxy.get_data(('rub', 'usd'), date(2020, 1, 1), 'day', date(2020, 1, 31))
+    client = pd.Manager()
+    # --------------------- Strategy -------------------------
+    print('--------------------- Strategy -------------------------')
+    print('need second source')
+    client.extract_data('rub', date.today(), 'year', source='2')
+    print('need first source')
+    client.extract_data('rub', date.today(), 'year', source='1')
 
-    # delegation
-    print('-----------Delegation-------------')
-    visualizers = [pd.Visualizer1(), pd.Visualizer2()]
-    predictors = [pd.Predictor1(), pd.Predictor2()]
+    # --------------------- Memento -------------------------
+    print('--------------------- Memento -------------------------')
 
-    manager1 = pd.Manager(predictors[0], visualizers[1])
-    manager2 = pd.Manager(predictors[1], visualizers[0])
+    data = pd.Data([1, 2, 3])
 
-    manager1.predict(pd.Data())
-    manager1.show(pd.Data(), pd.Data())
+    data.print()
+    client.remember_data(data)
+    client.change_data(data)
+    data.print()
+    client.remember_data(data)
+    client.change_data(data)
+    data.print()
+    client.restore_state(data)
+    data.print()
+    client.restore_state(data)
+    data.print()
 
-    manager2.predict(pd.Data())
-    manager2.show(pd.Data(), pd.Data())
+    # --------------------- Observer -------------------------
+    print('--------------------- Observer -------------------------')
+
+    client.configure_observers()
+    client.predict_button_pressed()
+
+    client.reconfigure_observers()
+    client.predict_button_pressed()
+
+
 
